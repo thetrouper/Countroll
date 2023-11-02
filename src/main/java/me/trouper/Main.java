@@ -1,9 +1,11 @@
 package me.trouper;
-import net.objecthunter.exp4j.Expression;
-import net.objecthunter.exp4j.ExpressionBuilder;
+
+import me.trouper.Functions.Complexers;
 
 import java.util.Random;
 import java.util.Scanner;
+
+import static me.trouper.Functions.Eval.eval;
 
 public class Main {
 
@@ -43,19 +45,15 @@ public class Main {
         while (eval(expression.toString()) != target) {
             System.out.println("Current: " + eval(expression.toString()));
             int ri = random.nextInt(9)+1;
+            int op = random.nextInt(2);
             System.out.println("Random: " + ri);
             if (eval(expression.toString()) < target) {
-                int squared = (int) Math.pow(ri,2);
-                String back = "sqrt(" + squared + ")";
-                expression.append("+").append(back);
+                expression.append("+").append((op == 0) ? Complexers.divide(ri) : Complexers.root(ri));
                 System.out.println("Less than");
             }
             if (eval(expression.toString()) > target) {
-                int f = random.nextInt(9)+1;
-                int doubled = ri * f;
-                String back = "(" + doubled + "/" + f +")";
-                expression.insert(0,"(");
-                expression.append(")").append("-").append(back);
+                expression.insert(0,"(").append(")");
+                expression.append("-").append((op == 0) ? Complexers.divide(ri) : Complexers.root(ri));
                 System.out.println("Greater than");
             }
         }
@@ -66,36 +64,5 @@ public class Main {
         return expression.toString();
     }
 
-    public static double eval(String expression) {
-        Expression exp = new ExpressionBuilder(expression).build();
-        return exp.evaluate();
-    }
-/*
-    public static void main(String[] args) {
-        Scanner reader = new Scanner(System.in);
 
-        while (true) {
-            System.out.println("Enter a target Integer: ");
-            if (reader.hasNextInt()) {
-                int target = reader.nextInt();
-                String obfuscatedExpression = generateObfuscatedExpression(target);
-                Expression exp = new ExpressionBuilder(obfuscatedExpression).build();
-                if (exp.evaluate() == target) {
-                    System.out.println("Target Integer: " + target + "\n" +
-                            "Output is Verified Correct!\n" +
-                            "Expression: " + obfuscatedExpression);
-                } else {
-                    System.out.println("Target Integer: " + target + "\n" +
-                            "INCORRECT OUTPUT GENERATED!\n" +
-                            "Expression: " + obfuscatedExpression);
-                }
-            } else {
-                System.out.println("Exiting the program.");
-                break;
-            }
-        }
-
-        reader.close();
-    }
- */
 }
