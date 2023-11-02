@@ -8,4 +8,14 @@ public class Eval {
         Expression exp = new ExpressionBuilder(expression).build();
         return exp.evaluate();
     }
+    public static boolean isPerfectSquare(int num) {
+        if (num < 0) {
+            return false;
+        }
+        int sqrt = (int) Math.sqrt(num);
+        return sqrt * sqrt == num;
+    }
+    public static boolean isInt(double number) {
+        return (number == Math.floor(number)) && !Double.isInfinite(number);
+    }
 }

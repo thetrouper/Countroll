@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'me.trouper'
-version '1.0-SNAPSHOT'
+version '0.0.1'
 
 repositories {
     mavenCentral()
@@ -22,5 +22,10 @@ test {
 jar {
     manifest {
         attributes 'Main-Class': 'me.trouper.Main'
+    }
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
     }
 }

@@ -17,6 +17,21 @@ public class Complexers {
         return "(" + i + ")";
     }
 
+    public static String multiply(int i, int factor) {
+        String result = "(" + i + "*" + factor + ")";
+        if (eval(result) == i * factor) {
+            return result;
+        }
+        return "(" + i + ")";
+    }
+    public static String power(int i, int exp) {
+        String result = "(" + i + "^" + exp + ")";
+        if (eval(result) == Math.pow(i,exp)) {
+            return result;
+        }
+        return "(" + i + ")";
+    }
+
     public static String root(int i) {
         int squared = (int) Math.pow(i,2);
         String result = "sqrt(" + squared + ")";
@@ -25,9 +40,4 @@ public class Complexers {
         }
         return "(" + i + ")";
     }
-
-    /*public static String power(int i) {
-        int
-    }
-     */
 }
