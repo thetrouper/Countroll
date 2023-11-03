@@ -1,9 +1,11 @@
 package me.trouper;
-import net.objecthunter.exp4j.Expression;
-import net.objecthunter.exp4j.ExpressionBuilder;
+
+import me.trouper.Functions.Complexers;
 
 import java.util.Random;
 import java.util.Scanner;
+
+import static me.trouper.Functions.Eval.*;
 
 public class Main {
 
@@ -11,10 +13,10 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.print("Enter Target Integer (or a non-integer to exit): ");
+            System.out.print("Enter Target Integer: ");
             if (scanner.hasNextInt()) {
                 int target = scanner.nextInt();
-                String expression = generateObfuscatedExpression(target);
+                String expression = obfInt(target);
                 double output = eval(expression);
 
                 System.out.println("\nTarget Integer: " + target);
@@ -32,7 +34,7 @@ public class Main {
         scanner.close();
     }
 
-    public static String generateObfuscatedExpression(int target) {
+    public static String obfInt(int target) {
         StringBuilder expression = new StringBuilder();
         Random random = new Random();
 
@@ -40,62 +42,86 @@ public class Main {
         System.out.println("Initializing Expression: " + initializer);
         expression.append(initializer);
 
+        int cubeCount = 0;
+        int factorCount = 0;
+        int addCount = 0;
+        int subCount = 0;
+        int rootCount = 0;
+        int divideCount = 0;
+        int perfectCount = 0;
+        int total = 0;
+
         while (eval(expression.toString()) != target) {
-            System.out.println("Current: " + eval(expression.toString()));
+            total++;
+            int eval = (int) eval(expression.toString());
             int ri = random.nextInt(9)+1;
-            System.out.println("Random: " + ri);
-            if (eval(expression.toString()) < target) {
-                int squared = (int) Math.pow(ri,2);
-                String back = "sqrt(" + squared + ")";
-                expression.append("+").append(back);
-                System.out.println("Less than");
+            int op = random.nextInt(2);
+
+            if (!isInt(eval(expression.toString()))) {
+                System.out.println("Something went horribly wrong, Here is the relevant info." +
+                        "\nEvaluation: " + eval(expression.toString()) +
+                        "\nRandom Pick: " + ri +
+                        "\nOperation: " + op +
+                        "\nCaught at: \n" + expression);
+                break;
             }
-            if (eval(expression.toString()) > target) {
-                int f = random.nextInt(9)+1;
-                int doubled = ri * f;
-                String back = "(" + doubled + "/" + f +")";
-                expression.insert(0,"(");
-                expression.append(")").append("-").append(back);
-                System.out.println("Greater than");
+
+            System.out.println("Random: " + ri);
+            System.out.println("Current: " + eval(expression.toString()));
+
+            if (isPerfectSquare(eval)) {
+                perfectCount++;
+                System.out.println("PERFECT SQUARE TIME! (" + perfectCount+ ")");
+                expression.insert(0,"sqrt(").append(")");
+                eval = (int) eval(expression.toString());
+            }
+
+            if (target - eval > 1000) {
+                cubeCount++;
+                System.out.println("Enormous than (" + cubeCount + ")");
+                expression.append("+").append(Complexers.power(ri,3));
+            } else if (target - eval > 100) {
+                factorCount++;
+                System.out.println("Large than (" + factorCount + ")");
+                expression.append("+").append(Complexers.multiply(ri,10));
+            }
+
+            if (eval < target) {
+                addCount++;
+                if (op == 0) {
+                    divideCount++;
+                } else {
+                    rootCount++;
+                }
+                expression.append("+").append((op == 0) ? Complexers.divide(ri) : Complexers.root(ri));
+                System.out.println("Less than (" + addCount + ")");
+            }
+
+            if (eval > target) {
+                subCount++;
+                if (op == 0) {
+                    divideCount++;
+                } else {
+                    rootCount++;
+                }
+                expression.insert(0,"(").append(")");
+
+                expression.append("-").append((op == 0) ? Complexers.divide(ri) : Complexers.root(ri));
+                System.out.println("Greater than (" + subCount + ")");
             }
         }
 
         System.out.println("Broke out of loop. Value: " + eval(expression.toString()));
         System.out.println("Expression: " + expression.toString());
-
+        System.out.println("Statistics: " +
+                "\nCubes: " + cubeCount +
+                "\nFactors: " + factorCount +
+                "\nAdditions: " + addCount +
+                "\nSubtractions: " + subCount +
+                "\nRoots Taken: " + rootCount +
+                "\nDivisors " + divideCount +
+                "\nPerfect Squares Found: " + perfectCount +
+                "\nTotal steps taken: " + total);
         return expression.toString();
     }
-
-    public static double eval(String expression) {
-        Expression exp = new ExpressionBuilder(expression).build();
-        return exp.evaluate();
-    }
-/*
-    public static void main(String[] args) {
-        Scanner reader = new Scanner(System.in);
-
-        while (true) {
-            System.out.println("Enter a target Integer: ");
-            if (reader.hasNextInt()) {
-                int target = reader.nextInt();
-                String obfuscatedExpression = generateObfuscatedExpression(target);
-                Expression exp = new ExpressionBuilder(obfuscatedExpression).build();
-                if (exp.evaluate() == target) {
-                    System.out.println("Target Integer: " + target + "\n" +
-                            "Output is Verified Correct!\n" +
-                            "Expression: " + obfuscatedExpression);
-                } else {
-                    System.out.println("Target Integer: " + target + "\n" +
-                            "INCORRECT OUTPUT GENERATED!\n" +
-                            "Expression: " + obfuscatedExpression);
-                }
-            } else {
-                System.out.println("Exiting the program.");
-                break;
-            }
-        }
-
-        reader.close();
-    }
- */
 }
