@@ -1,6 +1,8 @@
 package me.trouper;
 
+import me.trouper.Data.ANSI;
 import me.trouper.Functions.Complexers;
+import me.trouper.Functions.Increasers;
 import me.trouper.Functions.Utils;
 
 import java.util.Random;
@@ -12,6 +14,7 @@ import static me.trouper.Functions.Utils.verbose;
 public class Main {
     public static boolean verbose;
     public static boolean deep;
+    private static final StringBuilder formattedExp = new StringBuilder();
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean doCopy = false;
@@ -34,10 +37,10 @@ public class Main {
 
                 System.out.println("\nTarget Integer: " + target);
                 if (output == target) {
-                    System.out.println("Expression Verified Correct: \n" + expression);
+                    System.out.println(ANSI.GREEN_BACKGROUND + "Expression Verified Correct:" + ANSI.RESET + " \n" + formattedExp);
                     if (doCopy) Utils.copyToClip(expression);
                 } else {
-                    System.out.println("!!!! INCORRECT !!!! \n" + expression);
+                    System.out.println(ANSI.RED_BACKGROUND + ANSI.BLACK + "!!!! INCORRECT !!!! \n" + ANSI.RESET + formattedExp);
                 }
             } else {
                 System.out.println("Exiting the program.");
@@ -51,11 +54,14 @@ public class Main {
     public static String obfInt(int target, boolean deep) {
         if (deep) System.out.println("Deep Obfuscation is still in development!");
         StringBuilder expression = new StringBuilder();
+        formattedExp.setLength(0);
+
         Random random = new Random();
 
         int initializer = random.nextInt(9)+1;
         verbose("Initializing Expression: " + initializer);
         expression.append(initializer);
+        formattedExp.append(ANSI.GREEN).append(initializer).append(ANSI.RESET);
 
         int cubeCount = 0;
         int factorCount = 0;
@@ -89,6 +95,7 @@ public class Main {
                 perfectCount++;
                 verbose("PERFECT SQUARE TIME! (" + perfectCount+ ")");
                 expression.insert(0,"sqrt(").append(")");
+                formattedExp.insert(0,ANSI.YELLOW_BACKGROUND + "sqrt(").append(")" + ANSI.RESET);
                 eval = (int) eval(expression.toString());
             }
 
@@ -96,11 +103,11 @@ public class Main {
                 mult = true;
                 cubeCount++;
                 verbose("Enormous than (" + cubeCount + ")");
-                expression.append("+").append(Complexers.power(ri,3));
+                expression.append("+").append(Increasers.power(ri,3,deep));
             } else if (target - eval > 100) {
                 factorCount++;
                 verbose("Large than (" + factorCount + ")");
-                expression.append("+").append(Complexers.multiply(ri,10));
+                expression.append("+").append(Increasers.multiply(ri,10,deep));
                 continue;
             }
 
@@ -111,7 +118,7 @@ public class Main {
                 } else {
                     rootCount++;
                 }
-                expression.append((mult) ? "*" : "+").append((op == 0) ? Complexers.divide(ri) : Complexers.root(ri));
+                expression.append((mult) ? "*" : "+").append((op == 0) ? Complexers.divide(ri,deep) : Complexers.root(ri,deep));
                 verbose("Less than (" + addCount + ")");
             }
 
@@ -124,7 +131,7 @@ public class Main {
                 }
                 expression.insert(0,"(").append(")");
 
-                expression.append("-").append((op == 0) ? Complexers.divide(ri) : Complexers.root(ri));
+                expression.append("-").append((op == 0) ? Complexers.divide(ri,deep) : Complexers.root(ri,deep));
                 verbose("Greater than (" + subCount + ")");
             }
         }
