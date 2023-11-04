@@ -9,7 +9,7 @@ public class Complexers {
         Random random = new Random();
         int factor = random.nextInt(9)+1;
         int doubled = i * factor;
-        String result = "(" + doubled + "/" + factor + ")";
+        String result = "<&f>(<&r><&e>" + doubled + "<&b>/<&r><&e>" + factor + "<&f>)<&r>";
 
         if (eval(result) == i) {
             return result;
@@ -17,24 +17,10 @@ public class Complexers {
         return "(" + i + ")";
     }
 
-    public static String multiply(int i, int factor) {
-        String result = "(" + i + "*" + factor + ")";
-        if (eval(result) == i * factor) {
-            return result;
-        }
-        return "(" + i + ")";
-    }
-    public static String power(int i, int exp) {
-        String result = "(" + i + "^" + exp + ")";
-        if (eval(result) == Math.pow(i,exp)) {
-            return result;
-        }
-        return "(" + i + ")";
-    }
-
     public static String root(int i) {
         int squared = (int) Math.pow(i,2);
-        String result = "sqrt(" + squared + ")";
+        String result = "<&9>sqrt<&r><&f>(<&r><&e>" + squared + "<&f>)<&r>";
+
         if (eval(result) == i){
             return result;
         }
