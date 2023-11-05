@@ -19,9 +19,21 @@ Countroll is currently only compatible with [Numselli's counting bot](https://co
 ## Usage
 
 1. Compile the Java program from the source, or download a Precompiled Jar
-2. Execute it through the command-line `java -jar Countroll-<version>.jar`
+2. Execute it through the command-line `java -jar Countroll-<version>.jar [args]`
 3. Enter a target integer. (Whole number ie: 1, 16, 4096)
 4. Copy the outputed expression and use it wherever you'd like!
+
+## Arguments
+
+There are multiple command line arguments you can use for ease of use
+
+| Argument  | Alias(es) | Description                                       |
+|-----------|-----------|---------------------------------------------------|
+| --copy    | -c        | Automatically copies the output to your clipboard |
+| --verbose | -v        | Enables verbose output for debugging              |
+| --color   | -rgb      | Enables colored output for debug/it looks cool    |
+| --deep    | -d        | Will run the Complexers on the Increaser values   |
+| --help    | --h, -h   | Shows a message like this table                   |
 
 # Compiling
 Make sure you have Java 17 or higher installed on your system!
