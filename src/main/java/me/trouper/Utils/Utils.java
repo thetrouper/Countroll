@@ -15,7 +15,7 @@ public class Utils {
         clipboard.setContents(parsed,null);
     }
     public static void verbose(String text) {
-        if (Main.verbose) System.out.println(text);
+        if (Main.verbose) System.out.println(activateColors(text));
     }
     public static String removeColors(String input) {
         return input.replaceAll("<&[0-9a-fr]>|<&[0-9a-frh]h>", "");
@@ -58,49 +58,37 @@ public class Utils {
                 "\n<&e>Yellow:<&r> Complexer";
         System.out.println(activateColors(colorKey));
     }
-    /*
-    public static String highlightReg(String exp) {
-        final String result = exp
-                .replaceAll("\\(", ANSI.WHITE + "(" + ANSI.RESET)
-                .replaceAll("\\)", ANSI.WHITE + ")" + ANSI.RESET)
-                .replaceAll("\\*", ANSI.BLUE + "*" + ANSI.RESET)
-                .replaceAll("/", ANSI.BLUE + "/" + ANSI.RESET)
-                .replaceAll("\\+", ANSI.BLUE + "+" + ANSI.RESET)
-                .replaceAll("-", ANSI.BLUE + "-" + ANSI.RESET)
-                .replaceAll("\\^", ANSI.BLUE + "^" + ANSI.RESET)
-                .replaceAll("\\d+", ANSI.GREEN + "$0" + ANSI.RESET);
-        verbose("Attempting Ansi Highlight: " + result);
-        return result;
+
+    /**
+     * Returns the divisor of a mod equation given the modulus and dividend
+     * 5%x=2 -> x=3
+     * @param modulus Remainder
+     * @param dividend The number that is getting divided
+     * @return The divisor
+     */
+    public static int moduRootDivisor(int dividend, int modulus) {
+        int divisor = dividend - modulus;
+        verbose("<&1h><&e>Finding mrDivisor:<&r> " +
+                "\nDividend (Given): " + dividend +
+                "\nDivisor (Unknown): " + divisor +
+                "\nModulus (Given): " + modulus);
+        return divisor;
     }
 
-    public static String highlightDeep(String exp) {
-        final String result = exp
-                .replaceAll("\\(", ANSI.CYAN + "*" + ANSI.RESET)
-                .replaceAll("\\)", ANSI.CYAN + "*" + ANSI.RESET)
-                .replaceAll("\\*", ANSI.BLUE + "*" + ANSI.RESET)
-                .replaceAll("/", ANSI.BLUE + "/" + ANSI.RESET)
-                .replaceAll("\\+", ANSI.BLUE + "+" + ANSI.RESET)
-                .replaceAll("-", ANSI.BLUE + "-" + ANSI.RESET)
-                .replaceAll("\\^", ANSI.BLUE + "^" + ANSI.RESET)
-                .replaceAll("\\d+", ANSI.PURPLE + "$0" + ANSI.RESET);
-        verbose("Attempting Ansi Highlight (Deep): " + result);
-        return result;
+    /**
+     * Returns the dividend of a mod equation given the modulus and divisor
+     * x%3=2 -> x=5
+     * @param modulus Remainder
+     * @param divisor The number that does the dividing
+     * @return The dividend
+     */
+    public static int moduRootDividend(int divisor, int modulus) {
+        int dividend = modulus + divisor;
+        verbose("<&1h><&e>Finding mrDivisor:<&r> " +
+                "\nDividend (Unknown): " + dividend +
+                "\nDivisor (Given): " + divisor +
+                "\nModulus (Given): " + modulus);
+        return dividend;
     }
-    public static String fixAnsi(String input) {
-        Pattern pattern = Pattern.compile("(\\[\\d+m)");
-        Matcher matcher = pattern.matcher(input);
-        StringBuffer sb = new StringBuffer();
 
-        while (matcher.find()) {
-            // Check if the escape code was not properly closed (e.g., missing reset code)
-            if (input.substring(matcher.start()).indexOf(ANSI.RESET) < 0) {
-                String escapeCode = matcher.group(1);
-                // Re-escape the ANSI escape code
-                matcher.appendReplacement(sb, escapeCode);
-            }
-        }
-        matcher.appendTail(sb);
-
-        return sb.toString();
-    }*/
 }

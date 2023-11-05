@@ -1,5 +1,7 @@
 package me.trouper.Functions;
 
+import me.trouper.Main;
+
 import java.util.Random;
 
 import static me.trouper.Functions.Eval.*;
@@ -8,7 +10,13 @@ import static me.trouper.Utils.Utils.removeColors;
 import static me.trouper.Utils.Utils.verbose;
 
 public class Obf {
-    public static String obfInt(int target, boolean deep) {
+    /**
+     * ObfIntN will work for Numselli's counting bot
+     * @param target Integer to reach
+     * @param deep When True, doubles the use of Complexers and Increasers
+     * @return A colored string
+     */
+    public static String obfIntN(int target, boolean deep) {
         if (deep) System.out.println("Deep Obfuscation is coming soon!");
         StringBuilder expression = new StringBuilder();
 
@@ -18,17 +26,9 @@ public class Obf {
         verbose("Initializing Expression: " + initializer);
         expression.append("<&dh><&f>").append(initializer).append("<&r>");
 
-        int cubeCount = 0;
-        int factorCount = 0;
-        int addCount = 0;
-        int subCount = 0;
-        int rootCount = 0;
-        int divideCount = 0;
-        int perfectCount = 0;
-        int total = 0;
 
         while (eval(expression.toString()) != target) {
-            total++;
+            Main.total++;
             int eval = (int) eval(expression.toString());
             int ri = random.nextInt(9)+1;
             int op = random.nextInt(2);
@@ -47,77 +47,128 @@ public class Obf {
             verbose("Current: " + eval(expression.toString()));
 
             if (isPerfectSquare(eval) && eval != 1) {
-                perfectCount++;
-                verbose("PERFECT SQUARE TIME! (" + perfectCount+ ")");
+                Main.perfectCount++;
+                verbose("PERFECT SQUARE TIME! (" + Main.perfectCount+ ")");
                 expression.insert(0,"<&eh><&b>sqrt(<&r>").append("<&eh><&b>)<&r>");
                 eval = (int) eval(expression.toString());
             }
-            if (target - eval > 4069) {
-                mult = true;
-                cubeCount++;
-                verbose("Large than (" + cubeCount + ")");
-                final String toAdd = Increasers.power(ri,3);
-                expression.append("<&b>+<&r><&a>").append(toAdd).append("<&r>");
-            } else if (target - eval > 1048) {
-                mult = true;
-                cubeCount++;
-                verbose("Large than (" + cubeCount + ")");
-                final String toAdd = Increasers.power(ri,2);
-                expression.append("<&b>+<&r><&a>").append(toAdd).append("<&r>");
-            } else if (target - eval > 128) {
-                factorCount++;
-                verbose("Big than (" + factorCount + ")");
-                final String toAdd = Increasers.multiply(ri,9);
-                expression.append("<&b>+<&r><&a>").append(toAdd).append("<&r>");
-                continue;
-            }
+
+            final String toAdd = complex(ri,deep,"n");
 
             if (eval < target) {
-                addCount++;
-                if (op == 0) {
-                    divideCount++;
-                } else {
-                    rootCount++;
+                if (target - eval > 4069) {
+                    Main.expCount++;
+                    verbose("Large than (" + Main.expCount + ")");
+                    expression.append("<&b>*<&r><&a>").append(Increasers.power(ri,3,deep)).append("<&r>");
+                } else if (target - eval > 1048) {
+                    Main.expCount++;
+                    verbose("Large than (" + Main.expCount + ")");
+                    expression.append("<&b>*<&r><&a>").append(Increasers.power(ri,2,deep)).append("<&r>");
+                } else if (target - eval > 128) {
+                    Main.factorCount++;
+                    verbose("Big than (" + Main.factorCount + ")");
+                    expression.append("<&b>*<&r><&a>").append(Increasers.multiply(ri,9,deep)).append("<&r>");
                 }
-
-                final String toAdd = (op == 0) ? Complexers.divide(ri) : Complexers.root(ri);
-
-                expression.append((mult) ? "<&b>*<&r>" : "<&b>+<&r><&e>").append(toAdd).append("<&r>");
-                verbose("Less than (" + addCount + ")");
+                Main.addCount++;
+                expression.append("<&b>+<&r><&e>").append(toAdd).append("<&r>");
+                verbose("Less than (" + Main.addCount + ")");
             }
 
             if (eval > target) {
-                subCount++;
-                if (op == 0) {
-                    divideCount++;
-                } else {
-                    rootCount++;
-                }
-
-                final String toAdd = (op == 0) ? Complexers.divide(ri) : Complexers.root(ri);
-                /*
-                String colored = Utils.highlightReg(toAdd);
-                if (deep) {
-                    colored = Utils.highlightDeep(toAdd);
-                }*/
+                Main.subCount++;
                 expression.insert(0,"<&c>(<&r>").append("<&c>)<&r>");
                 expression.append("<&b>-<&r><&e>").append(toAdd).append("<&r>");
-                verbose("Greater than (" + subCount + ")");
+                verbose("Greater than (" + Main.subCount + ")");
             }
         }
 
         verbose("Broke out of loop. Value: " + eval(expression.toString()));
         verbose("Expression: " + expression);
         verbose("Expression (Cleaned): " + removeColors(expression.toString()));
-        System.out.println("\n\n\n\nStatistics: " +
-                "\nCubes: " + cubeCount +
-                "\nFactors: " + factorCount +
-                "\nAdditions: " + addCount +
-                "\nSubtractions: " + subCount +
-                "\nRoots Taken: " + rootCount +
-                "\nDivisors: " + divideCount +
-                "\nPerfect Squares Found: " + perfectCount +
-                "\nTotal steps taken: " + total);
         return expression.toString();
+    }
+
+    /**
+     * ObfIntD will work with DuckGroups's Counting bot
+     * @param target Integer to reach
+     * @param deep When True, doubles the use of Complexers and Increasers
+     * @return A colored string
+     */
+    public static String obfIntD(int target, boolean deep) {
+        if (deep) System.out.println("Deep Obfuscation is coming soon!");
+        StringBuilder expression = new StringBuilder();
+
+        Random random = new Random();
+
+        int initializer = random.nextInt(9)+1;
+        verbose("Initializing Expression: " + initializer);
+        expression.append("<&dh><&f>").append(initializer).append("<&r>");
+
+        while (eval(expression.toString()) != target) {
+            Main.total++;
+            int eval = (int) eval(expression.toString());
+            int ri = random.nextInt(9)+1;
+
+
+            final String toAdd = complex(ri,deep,"d");
+
+            if (eval < target) {
+                if (target - eval > 4096) {
+                Main.expCount++;
+                expression.append("<&b>*<&r>").append(Increasers.power(ri,4,deep));
+                } else if (target - eval > 1048) {
+                    Main.expCount++;
+                    expression.append("<&b>*<&r>").append(Increasers.power(ri,2,deep));
+                } else if (target - eval > 128) {
+                    Main.factorCount++;
+                    expression.append("<&b>*<&r>").append(Increasers.multiply(ri,2,deep));
+                }
+                Main.addCount++;
+                expression.append("<&b>+<&r>").append(toAdd);
+            }
+            if (eval > target) {
+                if (eval - target > 4096) {
+                    Main.expCount++;
+                    expression.append("<&b>-<&r>").append(Increasers.power(ri,5,deep));
+                } else if (eval - target> 1048) {
+                    Main.expCount++;
+                    expression.append("<&b>-<&r>").append(Increasers.power(ri,3,deep));
+                } else if (eval - target > 128) {
+                    Main.factorCount++;
+                    expression.append("<&b>-<&r>").append(Increasers.multiply(ri,2,deep));
+                }
+                Main.subCount++;
+                expression.insert(0,"<&c>(<&r>").append("<&c>)<&r>");
+                expression.append("<&b>-<&r>").append(toAdd);
+            }
+        }
+        return expression.toString();
+    }
+    public static String increase(int target, int current, boolean deep, String mode) {
+        return target + "" + current;
+    }
+    public static String complex(int target, boolean deep, String mode) {
+        Random random = new Random();
+        String toAdd = "(" + target + ")";
+        int rComplexer;
+        switch (mode) {
+            case "n" -> rComplexer = random.nextInt(4)+1;
+            case "d" -> rComplexer = random.nextInt(3)+1;
+            default -> rComplexer = 1;
+        }
+        if (target == 1) {
+            toAdd = Complexers.power(target,deep);
+        } else if (isPerfectSquare(target)) {
+            toAdd = Complexers.power(target,deep);
+        } else {
+            switch (rComplexer) {
+                case 1 -> toAdd = Complexers.divide(target,deep);
+                case 2 -> toAdd = Complexers.mRootDivisor(target,deep);
+                case 3 -> toAdd = Complexers.mRootDividend(target,deep);
+                case 4 -> toAdd = Complexers.root(target,deep); // Won't reach this one, if its "d" due to it stopping at 3
+            }
+        }
+
+        return (eval(toAdd) == target) ? toAdd : "(" + target + ")";
     }
 }
