@@ -1,7 +1,7 @@
 
 # Countroll - Description
 
-Countroll is designed to make using counting bots a bit more interesting. It turns integers into complex, unreadable 
+Countroll is designed to make using counting bots a bit more interesting. It turns integers into complex, unreadable
 mathematical expressions, perfect for showing off your mathematical knowledge to you friends!
 Countroll uses the following operators to make your integer as complex as possible
 
@@ -14,7 +14,9 @@ Countroll uses the following operators to make your integer as complex as possib
 
 ## Compatibility
 
-Countroll is currently only compatible with [Numselli's counting bot](https://counting.numselli.xyz/), although I hope to be able to support more counting bots soon!
+Countroll is currently compatible with the following bots, please open an issue if you find another bot that is compatible or one that isn't compatible!
+- [Numselli's counting bot](https://counting.numselli.xyz/)
+- [DuckGroup's Counting bot](https://countingbot.com/)
 
 ## Usage
 
@@ -34,6 +36,15 @@ There are multiple command line arguments you can use for ease of use
 | --color   | -rgb      | Enables colored output for debug/it looks cool    |
 | --deep    | -d        | Will run the Complexers on the Increaser values   |
 | --help    | --h, -h   | Shows a message like this table                   |
+| --mode    | -m        | Changes the mode of the bot                       |
+
+## Modes:
+You can change the bot's mode with the --mode option
+- `--mode=numselli` or `-m=n` Uses Square Root
+- `--mode=duckgroup` or `-m=d` Does not use Square Root
+- `--mode=TEST` or `-m=t` testing mode (evaluates a given expression)
+
+DuckGroup does not support square roots, which is why they are seperate
 
 # Compiling
 Make sure you have Java 17 or higher installed on your system!
@@ -41,4 +52,8 @@ Make sure you have Java 17 or higher installed on your system!
 2. Change directory to the repo `$ cd Countroll`
 3. Build with gradle `$ ./gradlew build`
 4. Build will be output to `/Countroll/build/libs`
+
+# Up Next
+Development will continue with the addition of bitwise operations AND (&) and OR (|)
+- Both bots support these operators, and it will be in both modes
 

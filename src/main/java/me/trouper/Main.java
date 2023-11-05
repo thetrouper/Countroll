@@ -54,7 +54,7 @@ public class Main {
                 case "--help", "--h", "-h" -> printHelp = true;
                 case "--mode=numselli", "-m=n" -> mode = "N";
                 case "--mode=duckgroup", "-m=d" -> mode = "D";
-                case "--mode=TEST" -> mode = "TEST";
+                case "--mode=TEST", "-m=t" -> mode = "TEST";
             }
         }
 
