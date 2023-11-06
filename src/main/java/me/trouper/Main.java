@@ -47,12 +47,6 @@ public class Main {
         boolean doCopy = false;
         String mode = "N";
 
-        Complexers.divide = true;
-        Complexers.power = true;
-        Complexers.root = true;
-        Complexers.mrDividend = true;
-        Complexers.mrDivisor = true;
-
         for (String arg : args) {
             switch (arg) {
                 case "--copy", "-c" -> doCopy = true;
@@ -66,6 +60,12 @@ public class Main {
             }
         }
 
+
+        Complexers.useRoot = !mode.equals("D");
+        Complexers.usePower = true;
+        Complexers.useDivide = true;
+        Complexers.useRDivisor = true;
+        Complexers.useRDividend = true;
 
 
         if (mode.equals("TEST")) {
