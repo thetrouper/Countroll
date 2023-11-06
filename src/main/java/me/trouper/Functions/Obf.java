@@ -53,7 +53,7 @@ public class Obf {
                 eval = (int) eval(expression.toString());
             }
 
-            final String toAdd = complex(ri,deep,"n");
+            final String toAdd = Complexers.complex(ri,deep);
 
             if (eval < target) {
                 if (target - eval > 4069) {
@@ -110,7 +110,7 @@ public class Obf {
             int ri = random.nextInt(9)+1;
 
 
-            final String toAdd = complex(ri,deep,"d");
+            final String toAdd = Complexers.complex(ri,deep);
 
             if (eval < target) {
                 if (target - eval > 4096) {
@@ -143,36 +143,5 @@ public class Obf {
             }
         }
         return expression.toString();
-    }
-    public static String increase(int target, int current, boolean deep, String mode) {
-        return target + "" + current;
-    }
-    public static String complex(int target, boolean deep, String mode) {
-        Random random = new Random();
-        String toAdd = "(" + target + ")";
-        int rComplexer;
-        switch (mode) {
-            case "n" -> rComplexer = random.nextInt(4)+1;
-            case "d" -> rComplexer = random.nextInt(3)+1;
-            default -> rComplexer = 1;
-        }
-        if (target == 1) {
-            toAdd = Complexers.power(target,deep);
-        } else if (isPerfectSquare(target)) {
-            toAdd = Complexers.power(target,deep);
-        } else {
-            switch (rComplexer) {
-                case 1 -> toAdd = Complexers.divide(target,deep);
-                case 2 -> toAdd = Complexers.mRootDivisor(target,deep);
-                case 3 -> toAdd = Complexers.mRootDividend(target,deep);
-                case 4 -> toAdd = Complexers.root(target,deep); // Won't reach this one, if its "d" due to it stopping at 3
-            }
-        }
-
-        return (eval(toAdd) == target) ? toAdd : "(" + target + ")";
-    }
-
-    public static String pickComplexer() {
-        return "e";
     }
 }

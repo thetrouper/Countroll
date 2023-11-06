@@ -3,19 +3,59 @@ package me.trouper.Functions;
 import me.trouper.Main;
 import me.trouper.Utils.Utils;
 
-import java.util.Random;
+import java.util.*;
 
 import static me.trouper.Functions.Eval.eval;
 import static me.trouper.Functions.Eval.isPerfectSquare;
 
 public class Complexers {
     /* Complexer Toggles */
-    public static boolean divide;
-    public static boolean power;
-    public static boolean root;
-    public static boolean mrDividend;
-    public static boolean mrDivisor;
+    public static boolean useDivide;
+    public static boolean usePower;
+    public static boolean useRoot;
+    public static boolean useRDividend;
+    public static boolean useRDivisor;
 
+    public static String pickComplexer() {
+        List<String> enabledComplexers = new ArrayList<>();
+
+        if (useDivide) enabledComplexers.add("divide");
+        if (usePower) enabledComplexers.add("power");
+        if (useRoot) enabledComplexers.add("root");
+        if (useRDividend) enabledComplexers.add("mrDividend");
+        if (useRDivisor) enabledComplexers.add("mrDivisor");
+
+        Collections.shuffle(enabledComplexers);
+        if (!enabledComplexers.isEmpty()) {
+            return enabledComplexers.get(0);
+        } else {
+            return "NONE";
+        }
+    }
+    public static String complex(int i, boolean deep) {
+        String complexer = pickComplexer();
+        if (isPerfectSquare(i)) complexer = "power";
+        switch (complexer) {
+            case "divide" -> {
+                return divide(i,deep);
+            }
+            case "power" -> {
+                return power(i,deep);
+            }
+            case "root" -> {
+                return root(i,deep);
+            }
+            case "mrDividend" -> {
+                return mRootDividend(i,deep);
+            }
+            case "mrDivisor" -> {
+                return mRootDivisor(i,deep);
+            }
+            default -> {
+                return divide(i,false);
+            }
+        }
+    }
     /**
      * Safe to use with D mode
      * @param i Integer to divide
@@ -30,13 +70,10 @@ public class Complexers {
         boolean expFac = false;
         boolean expDoub = false;
 
-        if (isPerfectSquare(factor)) expFac = true;
-        if (isPerfectSquare(doubled)) expDoub = true;
-
         String result = "<&f>(<&r><&e>" + doubled + "<&b>/<&r><&e>" + factor + "<&f>)<&r>";
 
         if (deep) {
-            result = "<&3>(<&r><&d>" + ((expDoub) ? power(doubled,false) : divide(doubled,false)) + "<&b>/<&r><&d>" + ((expFac) ? power(factor,false) : divide(factor,false)) + "<&3>)<&r>";
+            result = "<&3>(<&r><&d>" + (complex(doubled,false)) + "<&b>/<&r><&d>" + (complex(factor,false)) + "<&3>)<&r>";
         }
         if (eval(result) != i) Utils.verbose("Failed to divide " + i + ", Attempted: " + result + "=" + eval(result));
         return eval(result) == i ? result : "(" + i + ")";
@@ -58,7 +95,7 @@ public class Complexers {
         String result =  "<&r><&f>(<&e>" + root + "<&b>^<&e>2<&f>)<&r>";
 
         if (deep) {
-            result = "<&r><&3>(<&d>" + divide(root,false) + "<&b>^<&d>2<&3>)<&r>";
+            result = "<&r><&3>(<&d>" + complex(root,false) + "<&b>^<&d>2<&3>)<&r>";
         }
         if (eval(result) != i) Utils.verbose("<&ch>Failed to power <&r>" + i + ", Attempted: " + result + "=" + eval(result));
         return eval(result) == i ? result : "(" + i + ")";
@@ -75,7 +112,7 @@ public class Complexers {
         String result = "<&9>sqrt<&r><&f>(<&r><&e>" + squared + "<&f>)<&r>";
 
         if (deep) {
-            result = "<&1>sqrt<&r><&3>(<&r><&d>" + divide(squared,false) + "<&3>)<&r>";
+            result = "<&1>sqrt<&r><&3>(<&r><&d>" + complex(squared, false) + "<&3>)<&r>";
         }
         if (eval(result) != i) Utils.verbose("<&ch>Failed to root <&r>" + i + ", Attempted: " + result + "=" + eval(result));
         return (eval(result) == i) ? result : "(" + i + ")";
@@ -93,7 +130,7 @@ public class Complexers {
         int divisor = Utils.moduRootDivisor(dividend,i);
         String result = "<&r><&f>(<&e>" + dividend + "<&b>%<&e>" + divisor + "<&f>)<&r>";
         if (deep) {
-            result = "<&r><&f>(<&e>" + dividend + "<&b>%<&e>" + divisor + "<&f>)<&r>";
+            result = "<&r><&7>(<&d>" + complex(dividend,false) + "<&b>%<&d>" + complex(divisor, false) + "<&7>)<&r>";
         }
         Utils.verbose("<&dh><&b>mRootDivisor has ran!<&r>" +
                 "\nWanted: " + i +
@@ -116,6 +153,9 @@ public class Complexers {
         int divisor = random.nextInt(9)+i+10;
         int dividend = Utils.moduRootDividend(divisor,i);
         String result = "<&r><&f>(<&e>" + dividend + "<&b>%<&e>" + divisor  + "<&f>)<&r>";
+        if (deep) {
+            result = "<&r><&7>(<&d>" + complex(dividend,false) + "<&b>%<&d>" + complex(divisor,false)  + "<&7>)<&r>";
+        }
         Utils.verbose("<&dh><&b>mRootDividend has been ran!<&r>" +
                 "\nWanted:" + i +
                 "\nDivisor: " + divisor +
