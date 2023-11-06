@@ -1,5 +1,8 @@
 package me.trouper.Functions;
 
+import com.ezylang.evalex.EvaluationException;
+import com.ezylang.evalex.data.EvaluationValue;
+import com.ezylang.evalex.parser.ParseException;
 import me.trouper.Utils.Utils;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
@@ -20,5 +23,10 @@ public class Eval {
     }
     public static boolean isInt(double number) {
         return (number == Math.floor(number)) && !Double.isInfinite(number);
+    }
+    public static double evalM(String exp) throws EvaluationException, ParseException {
+        com.ezylang.evalex.Expression expression = new com.ezylang.evalex.Expression(exp);
+        EvaluationValue result = expression.evaluate();
+        return result.getNumberValue().doubleValue();
     }
 }

@@ -9,6 +9,12 @@ import static me.trouper.Functions.Eval.eval;
 import static me.trouper.Functions.Eval.isPerfectSquare;
 
 public class Complexers {
+    /* Complexer Toggles */
+    public static boolean divide;
+    public static boolean power;
+    public static boolean root;
+    public static boolean mrDividend;
+    public static boolean mrDivisor;
 
     /**
      * Safe to use with D mode
@@ -86,7 +92,10 @@ public class Complexers {
         int dividend = random.nextInt(9)+i+10;
         int divisor = Utils.moduRootDivisor(dividend,i);
         String result = "<&r><&f>(<&e>" + dividend + "<&b>%<&e>" + divisor + "<&f>)<&r>";
-        Utils.verbose("<&dh><&b>mRootDivisor has been ran!<&r>" +
+        if (deep) {
+            result = "<&r><&f>(<&e>" + dividend + "<&b>%<&e>" + divisor + "<&f>)<&r>";
+        }
+        Utils.verbose("<&dh><&b>mRootDivisor has ran!<&r>" +
                 "\nWanted: " + i +
                 "\nDivisor: " + divisor +
                 "\nDividend: " + dividend +
@@ -115,5 +124,6 @@ public class Complexers {
                 "\nResult: " + result);
         if (eval(result) != i) Utils.verbose("<&ch>Failed to mRootDividend<&r> " + i + ", Attempted: " + result + "=" + eval(result));
         return (eval(result) == i) ? result : "(" + i + ")";
+
     }
 }
