@@ -171,4 +171,8 @@ public class Obf {
 
         return (eval(toAdd) == target) ? toAdd : "(" + target + ")";
     }
+
+    public static String pickComplexer() {
+        return "e";
+    }
 }

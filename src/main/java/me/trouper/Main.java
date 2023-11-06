@@ -1,5 +1,6 @@
 package me.trouper;
 
+import me.trouper.Functions.Complexers;
 import me.trouper.Functions.Obf;
 import me.trouper.Utils.Timer;
 import me.trouper.Utils.Utils;
@@ -7,6 +8,7 @@ import me.trouper.Utils.Utils;
 import java.util.Scanner;
 
 import static me.trouper.Functions.Eval.eval;
+import static me.trouper.Functions.Eval.evalM;
 import static me.trouper.Utils.Utils.removeColors;
 
 public class Main {
@@ -14,6 +16,7 @@ public class Main {
     public static boolean deep;
     public static boolean color;
     public static boolean printHelp;
+
     /* Statistics */
     public static int expCount = 0;
     public static int factorCount = 0;
@@ -44,6 +47,11 @@ public class Main {
         boolean doCopy = false;
         String mode = "N";
 
+        Complexers.divide = true;
+        Complexers.power = true;
+        Complexers.root = true;
+        Complexers.mrDividend = true;
+        Complexers.mrDivisor = true;
 
         for (String arg : args) {
             switch (arg) {
@@ -58,6 +66,8 @@ public class Main {
             }
         }
 
+
+
         if (mode.equals("TEST")) {
             while (true) {
                 System.out.print("Enter an expression (or 'exit' to exit): ");
@@ -68,7 +78,7 @@ public class Main {
                 }
 
                 try {
-                    double result = eval(userInput);
+                    double result = evalM(userInput);
                     System.out.println("Result: " + result);
                 } catch (Exception e) {
                     System.out.println("Error: " + e.getMessage());

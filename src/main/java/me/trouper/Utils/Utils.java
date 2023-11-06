@@ -39,14 +39,17 @@ public class Utils {
     }
 
     public static void printHelp() {
-        System.out.println("Usage: java -jar Countroll-<version>.jar [options]");
-        System.out.println("Options:");
-        System.out.println("  --copy, -c    Copy the generated expression to the clipboard");
-        System.out.println("  --verbose, -v Enable verbose mode");
-        System.out.println("  --deep, -d    Enable deep obfuscation (under development)");
-        System.out.println("  --color, -rgb Enable colored output");
-        System.out.println("  --help, --h, -h Show this help message");
-        System.out.println("Note: When using multiple options, separate them with spaces.");
+        System.out.println("""
+                Usage: java -jar Countroll-<version>.jar [options]
+                Options: values are formated as such: -m=d or -t=root
+                  --copy, -c      Copy the generated expression to the clipboard
+                  --verbose, -v   Enable verbose mode
+                  --deep, -d      Enable deep obfuscation (under development)
+                  --color, -rgb   Enable colored output
+                  --help, --h, -h Show this help message
+                  --mode, -m      Toggle the mode Values (Long): [duckgroup, numselli] Values (Brief): [d, n]
+                  --toggle, -t    Toggle off Complexer Values: [divide, power, root, mrDividend, mrDivisor]
+                Note: When using multiple options, separate them with spaces.""");
         System.exit(0);
     }
     public static void printColorKey() {
