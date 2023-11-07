@@ -1,23 +1,26 @@
 package me.trouper;
 
+import me.trouper.Data.ConfigManager;
 import me.trouper.Functions.Complexers;
 import me.trouper.Functions.Obf;
 import me.trouper.Utils.Timer;
 import me.trouper.Utils.Utils;
+import me.trouper.Utils.Verbose;
 
 import java.util.Scanner;
 
 import static me.trouper.Functions.Eval.eval;
-import static me.trouper.Functions.Eval.evalM;
 import static me.trouper.Utils.Utils.removeColors;
 
-public class Main {
-    public static boolean verbose;
+public class Countroll {
+    public static boolean doCopy;
     public static boolean deep;
     public static boolean color;
     public static boolean printHelp;
+    public static String mode;
 
     /* Statistics */
+    public static int errorCount = 0;
     public static int expCount = 0;
     public static int factorCount = 0;
     public static int addCount = 0;
@@ -41,32 +44,36 @@ public class Main {
          rootCount = 0;
          perfectCount = 0;
          total = 0;
+         errorCount = 0;
     }
     public static void main(String[] args) {
+
         Scanner scanner = new Scanner(System.in);
-        boolean doCopy = false;
-        String mode = "N";
+        ConfigManager.loadConfig();
 
         for (String arg : args) {
             switch (arg) {
                 case "--copy", "-c" -> doCopy = true;
-                case "--verbose", "-v" -> verbose = true;
+                case "--verbose", "-v" -> Verbose.all = true;
                 case "--deep", "-d" -> deep = true;
                 case "--color", "-rgb" -> color = true;
                 case "--help", "--h", "-h" -> printHelp = true;
-                case "--mode=numselli", "-m=n" -> mode = "N";
+                case "--mode=test", "-m=t" -> mode = "TEST";
                 case "--mode=duckgroup", "-m=d" -> mode = "D";
-                case "--mode=TEST", "-m=t" -> mode = "TEST";
+                case "--mode=numselli", "-m=n" -> mode = "N";
+                case "--mode=universal", "-m=u" -> mode = "U";
             }
         }
 
+        Verbose.send("INIT","Loading config");
 
-        Complexers.useRoot = !mode.equals("D");
+        Verbose.send("INIT","Config loaded, mode: " + mode);
+        Complexers.useRoot = true;
         Complexers.usePower = true;
         Complexers.useDivide = true;
         Complexers.useRDivisor = true;
         Complexers.useRDividend = true;
-
+        if (mode.equals("D")) Complexers.useRoot = false;
 
         if (mode.equals("TEST")) {
             while (true) {
@@ -78,7 +85,7 @@ public class Main {
                 }
 
                 try {
-                    double result = evalM(userInput);
+                    double result = eval(userInput);
                     System.out.println("Result: " + result);
                 } catch (Exception e) {
                     System.out.println("Error: " + e.getMessage());
@@ -95,14 +102,14 @@ public class Main {
                 int target = scanner.nextInt();
                 Timer obfTimer = Timer.start();
                 String expression = null;
-                switch (mode) {
-                    case "N" -> expression = Obf.obfIntN(target, deep);
-                    case "D" -> expression = Obf.obfIntD(target, deep);
-                }
+
+                expression = Obf.obfIntN(target,deep);
+
                 long obfTime = obfTimer.end().timePassed();
                 double output = eval(removeColors(expression));
 
                 System.out.println("\nStatistics" +
+                        "\nErrors: " + errorCount +
                         "\nExponents: " + expCount +
                         "\nFactors: " + factorCount +
                         "\nAdditions: " + addCount +

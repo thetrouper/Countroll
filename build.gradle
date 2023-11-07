@@ -7,11 +7,14 @@ version '0.0.4'
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://nexus.stirante.com/repository/maven-snapshots/'
+    }
 }
 
 dependencies {
     implementation 'net.objecthunter:exp4j:0.4.8'
-    implementation 'com.ezylang:EvalEx:3.0.5'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
@@ -22,7 +25,7 @@ test {
 
 jar {
     manifest {
-        attributes 'Main-Class': 'me.trouper.Main'
+        attributes 'Main-Class': 'me.trouper.Countroll'
     }
     from {
         configurations.runtimeClasspath.collect {
