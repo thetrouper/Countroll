@@ -10,9 +10,11 @@ import me.trouper.Utils.Verbose;
 import java.util.Scanner;
 
 import static me.trouper.Functions.Eval.eval;
+import static me.trouper.Utils.Utils.copyToClip;
 import static me.trouper.Utils.Utils.removeColors;
 
 public class Countroll {
+    public static boolean showProgress;
     public static boolean doCopy;
     public static boolean deep;
     public static boolean color;
@@ -47,10 +49,35 @@ public class Countroll {
          errorCount = 0;
     }
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
         ConfigManager.loadConfig();
 
+        parseCommandLineArguments(args);
+
+        Verbose.send("INIT", "Loading config");
+        Verbose.send("INIT", "Config loaded, mode: " + mode);
+
+        if (mode.equals("D")) {
+            Complexers.useRoot = false;
+        }
+
+        if (mode.equals("TEST")) {
+            handleTestMode(scanner);
+        }
+
+        if (printHelp) {
+            Utils.printHelp();
+            System.exit(0);
+        }
+        if (color) {
+            Utils.printColorKey();
+        }
+
+        handleTargetIntegers(scanner);
+        scanner.close();
+    }
+
+    private static void parseCommandLineArguments(String[] args) {
         for (String arg : args) {
             switch (arg) {
                 case "--copy", "-c" -> doCopy = true;
@@ -64,80 +91,92 @@ public class Countroll {
                 case "--mode=universal", "-m=u" -> mode = "U";
             }
         }
+    }
 
-        Verbose.send("INIT","Loading config");
+    private static void handleTestMode(Scanner scanner) {
+        while (true) {
+            System.out.print("Enter an expression (or 'exit' to exit): ");
+            String userInput = scanner.next();
 
-        Verbose.send("INIT","Config loaded, mode: " + mode);
-        Complexers.useRoot = true;
-        Complexers.usePower = true;
-        Complexers.useDivide = true;
-        Complexers.useRDivisor = true;
-        Complexers.useRDividend = true;
-        if (mode.equals("D")) Complexers.useRoot = false;
+            if (userInput.equals("exit")) {
+                System.exit(0);
+            }
 
-        if (mode.equals("TEST")) {
-            while (true) {
-                System.out.print("Enter an expression (or 'exit' to exit): ");
-                String userInput = scanner.next();
-
-                if (userInput.equals("exit")) {
-                    System.exit(0);
-                }
-
-                try {
-                    double result = eval(userInput);
-                    System.out.println("Result: " + result);
-                } catch (Exception e) {
-                    System.out.println("Error: " + e.getMessage());
-                }
+            try {
+                double result = eval(userInput);
+                System.out.println("Result: " + result);
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
             }
         }
+    }
 
-        if (printHelp) Utils.printHelp();
-        if (color) Utils.printColorKey();
-
+    private static void handleTargetIntegers(Scanner scanner) {
         while (true) {
             System.out.print("Enter Target Integer: ");
             if (scanner.hasNextInt()) {
                 int target = scanner.nextInt();
+
                 Timer obfTimer = Timer.start();
-                String expression = null;
-
-                expression = Obf.obfIntN(target,deep);
-
+                String expression = Obf.obfInt(target);
                 long obfTime = obfTimer.end().timePassed();
+
                 double output = eval(removeColors(expression));
 
-                System.out.println("\nStatistics" +
-                        "\nErrors: " + errorCount +
-                        "\nExponents: " + expCount +
-                        "\nFactors: " + factorCount +
-                        "\nAdditions: " + addCount +
-                        "\nSubtractions: " + subCount +
-                        "\nDivisors: " + divideCount +
-                        "\nPowers: " + powerCount +
-                        "\nmRootDividends: " + rDividendCount +
-                        "\nmRootDivisors: " + rDivisorCount +
-                        "\nRoots Taken: " + rootCount +
-                        "\nPerfect Squares Found: " + perfectCount +
-                        "\nTotal steps taken: " + total);
-                System.out.println("\nElapsed Time: " + obfTime + "ms");
-                System.out.println("\nTarget Integer: " + target);
-
-                if (output == target) {
-                    System.out.println(Utils.activateColors("<&2h><&f>Expression Correct<&r>\n\n" + ((color) ? expression : removeColors(expression))));
-                    if (doCopy) Utils.copyToClip(removeColors(expression));
-                    clearStats();
-                } else {
-                    System.out.println(Utils.activateColors("<&ch><&0>!!!! INCORRECT !!!!<&r>\n\n" + ((color) ? expression : removeColors(expression))));
-                }
+                printStatistics(obfTime);
+                printReport(target,expression,output);
+                if (doCopy) copyToClip(removeColors(expression));
             } else {
                 System.out.println("Exiting the program.");
                 break;
             }
         }
-
-        scanner.close();
+    }
+    private static void printReport(int target, String expression, double output) {
+        String report;
+        if (target == output) {
+             report = String.format("""
+                 ╔═══════[ Report ]═════════
+                 ║ Target Integer: %d
+                 ║ Final Result: %s <&ah><&b>✔<&r>
+                 ║ Expression Length: %s
+                 ╚══════════════════════════
+                     
+             >> %s
+             """,target,output,expression.length(),expression);
+        } else {
+            report = String.format("""
+                ╔═══════[ Report ]═════════
+                ║ Target Integer: %d
+                ║ Final Result: %s <&ch><&e>❌<&r>
+                ║ Expression Length: %s
+                ╚══════════════════════════
+                
+            >>  %s
+            """,target,output,expression.length(),expression);
+        }
+        System.out.println((color) ? Utils.activateColors(report) : removeColors(report));
     }
 
+    private static void printStatistics(long time) {
+        String statistics = String.format("""
+        
+        ╔═══════[ Statistics ]═════════
+        ║ Exponents: %d
+        ║ Factors: %d
+        ║ Additions: %d
+        ║ Subtractions: %d
+        ║ Divisors: %d
+        ║ Powers: %d
+        ║ mRootDividends: %d
+        ║ Roots Taken: %d
+        ║ Perfect Squares Found: %d
+        ║ Errors: %d
+        ╠══════════════════════════════
+        ║ Total steps taken: %d
+        ║ Elapsed Time: %d
+        ╚══════════════════════════════
+    """, expCount, factorCount, addCount, subCount, divideCount, powerCount, rDividendCount, rootCount, perfectCount, errorCount, total, time);
+        System.out.println(statistics);
+    }
 }

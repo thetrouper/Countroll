@@ -23,11 +23,12 @@ public class Obf {
         // MAIN LOOP
         Verbose.send("PROC", "Beginning Main Loop: ");
         while (eval(expression.toString()) != target) {
-
             Countroll.total++;
             int current = (int) eval(expression.toString());
             int ri = rand.nextInt(9)+1;
+            if (Countroll.showProgress) System.out.println("Current Evaluation: " + current);
 
+            // Checking for it still being a whole number
             if (!isInt(eval(expression.toString()))) {
                 System.out.println("Something went horribly wrong, Here is the relevant info." +
                         "\nEvaluation: " + eval(expression.toString()) +
@@ -37,23 +38,25 @@ public class Obf {
             }
 
             String comp = Complexers.complex(ri,Countroll.deep);
-            String incr = Increasers.increase(current,target,ri,Countroll.deep);
-
+            // Case for if its below
             if (current < target) {
                 Countroll.addCount++;
                 expression.append("<&b>+<&r><&e>").append(comp).append("<&r>");
                 if (target - current > 128) {
-                    expression.append("<&b>+<&r><&e>").append(incr).append("<&r>");
+                    expression.append("<&b>*<&r><&e>").append(Increasers.increase(current,target,ri,Countroll.deep)).append("<&r>");
                 }
             }
+
+            // Case for if its above
             if (current > target) {
                 Countroll.subCount++;
                 expression.append("<&b>-<&r><&e>").append(comp).append("<&r>");
                 if (current - target > 128) {
-                    expression.append("<&b>-<&r><&e>").append(incr).append("<&r>");
+                    expression.append("<&b>-<&r><&e>").append(Increasers.increase(target,current,ri,Countroll.deep)).append("<&r>");
                 }
             }
         }
+        Verbose.send("PROC", "Broke out of loop.");
         return expression.toString();
     }
     /**

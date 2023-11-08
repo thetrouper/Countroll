@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import me.trouper.Countroll;
+import me.trouper.Functions.Complexers;
 import me.trouper.Utils.Verbose;
 
 import java.io.*;
@@ -23,7 +24,7 @@ public class ConfigManager {
             try (Reader reader = new FileReader(configFile)) {
                 Gson gson = new Gson();
                 Map<String, Object> config = gson.fromJson(reader, HashMap.class);
-                setMainClassVariables(config);
+                getConfig(config);
             } catch (JsonSyntaxException | JsonIOException | IOException e) {
                 e.printStackTrace();
                 generateDefaultConfig();
@@ -33,11 +34,16 @@ public class ConfigManager {
 
     private static void generateDefaultConfig() {
         Map<String, Object> defaultConfig = new HashMap<>();
+        defaultConfig.put("useDivide", true);
+        defaultConfig.put("usePower", true);
+        defaultConfig.put("useRoot", true);
+        defaultConfig.put("useModDividend", true);
         defaultConfig.put("doCopy", false);
         defaultConfig.put("deep", false);
-        defaultConfig.put("color", false);
+        defaultConfig.put("color", true);
         defaultConfig.put("printHelp", false);
-        defaultConfig.put("mode", "N");
+        defaultConfig.put("mode", "U");
+        defaultConfig.put("show.progress", false);
         defaultConfig.put("verbose.all",false);
         defaultConfig.put("verbose.processes",true);
         defaultConfig.put("verbose.loops",false);
@@ -53,11 +59,16 @@ public class ConfigManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        setMainClassVariables(defaultConfig);
+        getConfig(defaultConfig);
     }
 
-    private static void setMainClassVariables(Map<String, Object> config) {
+    private static void getConfig(Map<String, Object> config) {
         Verbose.send("INIT", "Loading main class variables");
+        Complexers.useDivide = (boolean) config.get("useDivide");
+        Complexers.usePower = (boolean) config.get("usePower");
+        Complexers.useRoot = (boolean) config.get("useRoot");
+        Complexers.useRDividend = (boolean) config.get("useModDividend");
+        Countroll.showProgress = (boolean) config.get("show.progress");
         Countroll.doCopy = (boolean) config.get("doCopy");
         Countroll.deep = (boolean) config.get("deep");
         Countroll.color = (boolean) config.get("color");
