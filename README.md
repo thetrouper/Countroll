@@ -11,6 +11,7 @@ Countroll uses the following operators to make your integer as complex as possib
 - Division | /
 - Square Root | sqrt()
 - Exponentiation | ^
+- Modulus | %
 
 ## Compatibility
 
@@ -38,6 +39,56 @@ There are multiple command line arguments you can use for ease of use
 | --help    | --h, -h   | Shows a message like this table                   |
 | --mode    | -m        | Changes the mode of the bot                       |
 
+# Config With Comments
+Dont fancy command line interfaces? Config is now implemented with json, here is a commented version
+```json
+{
+  "printHelp": false, // Will print help then exit
+  "mode": "U", // Switch Modes
+  // U is universal, and will follow all the comlpexer toggles for fully custom setup
+  // D is duckgroup mode, and will not use lettered functions
+  // N is numselli mode, and will enable all complexers
+  "doCopy": false, // Automatically copies the expression to your clipboard
+  "deep": false, // Executes the Complexers on every integer twice (Doubles output size)
+  "color": true, // Makes the output Razor Chroma RGB
+  "useDivide": true, // Toggles the divide Complexer
+  "useRoot": true, // Toggles the sqrt() Complexer
+  "usePower": true, // Toggles the power Complexer
+  "useModDividend": true, // Toggles the Modulus Complexer
+  "show.progress": false, // Shows the current integer evaluation of the expression
+  "verbose.all": false, // Enables all the verbose
+  "verbose.processes": true, // Toggles verbose for main processes
+  "verbose.complexers": false, // Toggles verbose for the complexers
+  "verbose.increasers": false, // Toggles verbose for the increasers
+  "verbose.utils": false, // Toggles verbose for the utils
+  "verbose.eval": false, // Toggles verbose for the eval function
+  "verbose.loops": false, // Toggles verbose for the loops itterations
+  "verbose.errors": true // Toggles verbose errors
+}
+```
+When the config generates automatically it will generate in a random order, here is the ordered version if you prefer to have it readable
+```json
+{ 
+  "printHelp": false,
+  "mode": "U",
+  "doCopy": false,
+  "deep": false,
+  "color": true,
+  "useDivide": true,
+  "useRoot": true, 
+  "usePower": true,
+  "useModDividend": true,
+  "show.progress": false,
+  "verbose.all": false,
+  "verbose.processes": true,
+  "verbose.complexers": false,
+  "verbose.increasers": false,
+  "verbose.utils": false,
+  "verbose.eval": false,
+  "verbose.loops": false,
+  "verbose.errors": true
+}
+```
 ## Modes:
 You can change the bot's mode with the --mode option
 - `--mode=numselli` or `-m=n` Uses Square Root
@@ -52,36 +103,4 @@ Make sure you have Java 17 or higher installed on your system!
 2. Change directory to the repo `$ cd Countroll`
 3. Build with gradle `$ ./gradlew build`
 4. Build will be output to `/Countroll/build/libs`
-
-# Config With Comments
-
-```json
-{ // The config is in json, there are no comments allowed in the countroll.json
-  "doCopy": false, // Automaticaly copying to clipboard
-  "deep": false, // Deep obfuscation, doubling output size
-  "verbose.errors": true, // Error printing
-  "color": true, // Razor Chroma RGB xpressions are outputed
-  "useRoot": true, // Uses sqrt() function
-  "verbose.complexers": false, // Shows what the complexers are doing
-  "show.progress": false, // Shows the current eval as the expression is building
-  "useDivide": true, // Toggles the divide complexer
-  "verbose.eval": false, // Shows what the eval function is doing
-  "verbose.processes": true, // Shows non looping verbose
-  "printHelp": false, // Prints a help message then exits
-  "mode": "U", // Switch modes
-  // U is universal, and will follow all the comlpexer toggles for fully custom setup
-  // D is duckgroup mode, and will not use lettered functions
-  // N is numselli mode, and will enable all complexers
-  "verbose.all": false, // Shows all the verbose
-  "usePower": true, // Toggles power complexer
-  "useModDividend": true, // Toggles moduRootDividend complexer (doesnt use letters)
-  "verbose.utils": false, // Shows what the Utils are doing
-  "verbose.increasers": false, // Shows what the increasers are doing
-  "verbose.loops": false // Shows what the loops are doing
-}
-```
-
-# Up Next
-Development will continue with the addition of bitwise operations AND (&) and OR (|)
-- Both bots support these operators, and it will be in both modes
 
