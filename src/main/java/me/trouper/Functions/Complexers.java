@@ -1,7 +1,8 @@
 package me.trouper.Functions;
 
-import me.trouper.Main;
+import me.trouper.Countroll;
 import me.trouper.Utils.Utils;
+import me.trouper.Utils.Verbose;
 
 import java.util.*;
 
@@ -14,7 +15,6 @@ public class Complexers {
     public static boolean usePower;
     public static boolean useRoot;
     public static boolean useRDividend;
-    public static boolean useRDivisor;
 
     public static String pickComplexer() {
         List<String> enabledComplexers = new ArrayList<>();
@@ -23,7 +23,6 @@ public class Complexers {
         if (usePower) enabledComplexers.add("power");
         if (useRoot) enabledComplexers.add("root");
         if (useRDividend) enabledComplexers.add("mrDividend");
-        if (useRDivisor) enabledComplexers.add("mrDivisor");
 
         Collections.shuffle(enabledComplexers);
         if (!enabledComplexers.isEmpty()) {
@@ -40,6 +39,9 @@ public class Complexers {
                 return divide(i,deep);
             }
             case "power" -> {
+                if (!isPerfectSquare(i)) {
+                    return divide(i,deep);
+                }
                 return power(i,deep);
             }
             case "root" -> {
@@ -47,9 +49,6 @@ public class Complexers {
             }
             case "mrDividend" -> {
                 return mRootDividend(i,deep);
-            }
-            case "mrDivisor" -> {
-                return mRootDivisor(i,deep);
             }
             default -> {
                 return divide(i,false);
@@ -62,21 +61,20 @@ public class Complexers {
      * @return Colored String
      */
     public static String divide(int i, boolean deep) {
-        Main.divideCount++;
+        Verbose.send("COMP", "Running Divide Complexer, I:" + i + " Deep: " + deep);
+        Countroll.divideCount++;
         Random random = new Random();
 
         int factor = random.nextInt(9)+1;
         int doubled = i * factor;
-        boolean expFac = false;
-        boolean expDoub = false;
 
         String result = "<&f>(<&r><&e>" + doubled + "<&b>/<&r><&e>" + factor + "<&f>)<&r>";
 
         if (deep) {
             result = "<&3>(<&r><&d>" + (complex(doubled,false)) + "<&b>/<&r><&d>" + (complex(factor,false)) + "<&3>)<&r>";
         }
-        if (eval(result) != i) Utils.verbose("Failed to divide " + i + ", Attempted: " + result + "=" + eval(result));
-        return eval(result) == i ? result : "(" + i + ")";
+        if (eval(result) != i) Verbose.send("ERR","<&ch>Failed to divide <&r>" + i + ", Attempted: " + result + "=" + eval(result));
+        return eval(result) == i ? result : "<&ch>(" + i + ")<&r>";
     }
 
     /**
@@ -86,10 +84,8 @@ public class Complexers {
      * @return Colored String
      */
     public static String power(int i, boolean deep) {
-        Main.powerCount++;
-        if (!Eval.isPerfectSquare(i)) {
-            return "(" + i + ")";
-        }
+        Verbose.send("COMP", "Running Power Complexer, I:" + i + " Deep: " + deep);
+        Countroll.powerCount++;
 
         int root = (int) Math.sqrt(i);
         String result =  "<&r><&f>(<&e>" + root + "<&b>^<&e>2<&f>)<&r>";
@@ -97,8 +93,8 @@ public class Complexers {
         if (deep) {
             result = "<&r><&3>(<&d>" + complex(root,false) + "<&b>^<&d>2<&3>)<&r>";
         }
-        if (eval(result) != i) Utils.verbose("<&ch>Failed to power <&r>" + i + ", Attempted: " + result + "=" + eval(result));
-        return eval(result) == i ? result : "(" + i + ")";
+        if (eval(result) != i) Verbose.send("ERR","<&ch>Failed to power <&r>" + i + ", Attempted: " + result + "=" + eval(result));
+        return eval(result) == i ? result : "<&ch>(" + i + ")<&r>";
     }
 
     /**
@@ -107,39 +103,16 @@ public class Complexers {
      * @return Colored String
      */
     public static String root(int i, boolean deep) {
-        Main.rootCount++;
+        Verbose.send("COMP", "Running Root Complexer, I:" + i + " Deep: " + deep);
+        Countroll.rootCount++;
         int squared = (int) Math.pow(i,2);
         String result = "<&9>sqrt<&r><&f>(<&r><&e>" + squared + "<&f>)<&r>";
 
         if (deep) {
             result = "<&1>sqrt<&r><&3>(<&r><&d>" + complex(squared, false) + "<&3>)<&r>";
         }
-        if (eval(result) != i) Utils.verbose("<&ch>Failed to root <&r>" + i + ", Attempted: " + result + "=" + eval(result));
-        return (eval(result) == i) ? result : "(" + i + ")";
-    }
-
-    /**
-     * Uses modulus (ri%divisor)=i
-     * @param i Modulus to return
-     * @return Colored string
-     */
-    public static String mRootDivisor(int i, boolean deep) {
-        Main.rDivisorCount++;
-        Random random = new Random();
-        int dividend = random.nextInt(9)+i+10;
-        int divisor = Utils.moduRootDivisor(dividend,i);
-        String result = "<&r><&f>(<&e>" + dividend + "<&b>%<&e>" + divisor + "<&f>)<&r>";
-        if (deep) {
-            result = "<&r><&7>(<&d>" + complex(dividend,false) + "<&b>%<&d>" + complex(divisor, false) + "<&7>)<&r>";
-        }
-        Utils.verbose("<&dh><&b>mRootDivisor has ran!<&r>" +
-                "\nWanted: " + i +
-                "\nDivisor: " + divisor +
-                "\nDividend: " + dividend +
-                "\nCheck: " + dividend + "%" + divisor + "=" + i +
-                "\nResult: " + result);
-        if (eval(result) != i) Utils.verbose("<&ch>Failed to mRootDivisor<&r> " + i + ", Attempted: " + result + "=" + eval(result));
-        return (eval(result) == i) ? result : "(" + i + ")";
+        if (eval(result) != i) Verbose.send("ERR","<&ch>Failed to root <&r>" + i + ", Attempted: " + result + "=" + eval(result));
+        return (eval(result) == i) ? result : "<&ch>(" + i + ")<&r>";
     }
 
     /**
@@ -148,7 +121,8 @@ public class Complexers {
      * @return Colored String
      */
     public static String mRootDividend(int i, boolean deep) {
-        Main.rDividendCount++;
+        Verbose.send("COMP", "Running mrDividend Complexer, I:" + i + " Deep: " + deep);
+        Countroll.rDividendCount++;
         Random random = new Random();
         int divisor = random.nextInt(9)+i+10;
         int dividend = Utils.moduRootDividend(divisor,i);
@@ -156,14 +130,14 @@ public class Complexers {
         if (deep) {
             result = "<&r><&7>(<&d>" + complex(dividend,false) + "<&b>%<&d>" + complex(divisor,false)  + "<&7>)<&r>";
         }
-        Utils.verbose("<&dh><&b>mRootDividend has been ran!<&r>" +
+        Verbose.send("COMP","<&dh><&b>mRootDividend has been ran!<&r>" +
                 "\nWanted:" + i +
                 "\nDivisor: " + divisor +
                 "\nDividend: " + dividend +
                 "\nCheck: " + dividend + "%" + divisor + "=" + i +
                 "\nResult: " + result);
-        if (eval(result) != i) Utils.verbose("<&ch>Failed to mRootDividend<&r> " + i + ", Attempted: " + result + "=" + eval(result));
-        return (eval(result) == i) ? result : "(" + i + ")";
+        if (eval(result) != i) Verbose.send("ERR","<&ch>Failed to mRootDividend<&r> " + i + ", Attempted: " + result + "=" + eval(result));
+        return (eval(result) == i) ? result : "<&ch>(" + i + ")<&r>";
 
     }
 }
